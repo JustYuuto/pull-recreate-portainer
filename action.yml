@@ -1,6 +1,9 @@
 name: 'Pull & Recreate to Portainer'
 description: 'Pull image and recreate container in Portainer. Useful for updating images.'
 author: 'Yuuto'
+branding:
+  icon: 'upload-cloud'
+  color: 'blue'
 
 inputs:
   portainer_url:
