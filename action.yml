@@ -1,0 +1,33 @@
+name: 'Pull & Recreate to Portainer'
+description: 'Pull image and recreate container in Portainer. Useful for updating images.'
+author: 'Yuuto'
+
+inputs:
+  portainer_url:
+    description: 'Portainer URL'
+    required: true
+  portainer_access_token:
+    description: 'Portainer API key'
+    required: true
+  container_name:
+    description: 'Container name'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Get containers list
+      run: |
+        CONTAINER_ID=$(curl -s -H "Authorization: Bearer ${{ inputs.portainer_access_token }}" \
+        "${{ inputs.portainer_url }}/api/endpoints/3/docker/v1.41/containers/json?all=true" | \
+        jq -r '.[] | select(.Names[] | contains("${{ inputs.container_name }}")) | .Id')
+        echo "CONTAINER_ID=$CONTAINER_ID" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Recreate container
+      if: env.CONTAINER_ID != ''
+      run: |
+        curl -X POST -H "Authorization: Bearer ${{ inputs.portainer_access_token }}" -H "Content-Type: application/json" \
+        -d '{"PullImage":true}' \
+        "${{ inputs.portainer_url }}/api/docker/3/containers/${{ env.CONTAINER_ID }}/recreate"
+      shell: bash
