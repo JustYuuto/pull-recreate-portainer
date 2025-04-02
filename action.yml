@@ -23,7 +23,7 @@ runs:
       run: |
         CONTAINER_ID=$(curl -s -H "X-Api-Key: ${{ inputs.portainer_access_token }}" \
         "${{ inputs.portainer_url }}/api/endpoints/3/docker/v1.41/containers/json?all=true" | \
-        jq -r '.[] | select(.Names[] | contains("${{ inputs.container_name }}")) | .Id')
+        jq -r '.[] | select(.Names[] == "${{ inputs.container_name }}") | .Id')
         echo "CONTAINER_ID=$CONTAINER_ID" >> $GITHUB_ENV
       shell: bash
 
