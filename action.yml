@@ -27,7 +27,7 @@ runs:
   steps:
     - name: Pull image
       run: |
-        curl -X POST -H "X-Api-Key: ${{ inputs.portainer_access_token }}" -H "X-Registry-Auth: $(echo ${{ inputs.registry_auth }} | base64)" \
+        curl -X POST -H "X-Api-Key: ${{ inputs.portainer_access_token }}" -H "X-Registry-Auth: $(echo '${{ inputs.registry_auth }}' | base64)" \
           "${{ inputs.portainer_url }}/api/endpoints/3/docker/v1.41/images/create?fromImage=${{ inputs.image_name }}"
       shell: bash
   
