@@ -18,13 +18,16 @@ inputs:
   image_name:
     description: 'Image name to pull.'
     required: true
+  registry_auth:
+    description: 'X-Registry-Auth header'
+    required: false
 
 runs:
   using: 'composite'
   steps:
     - name: Pull image
       run: |
-        curl -X POST -H "X-Api-Key: ${{ inputs.portainer_access_token }}" \
+        curl -X POST -H "X-Api-Key: ${{ inputs.portainer_access_token }}" -H "X-Registry-Auth: $(echo ${{ inputs.portainer_access_token }} | base64)" \
           "${{ inputs.portainer_url }}/api/endpoints/3/docker/v1.41/images/create?fromImage=${{ inputs.image_name }}"
       shell: bash
   
